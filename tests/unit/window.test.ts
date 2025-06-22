@@ -375,3 +375,32 @@ test('Notify', async () => {
   window.notifyBrowserWindows('event')
   expect(BrowserWindow.prototype.webContents.send).toHaveBeenCalledWith('event')
 })
+
+test('Fullscreen bounds for secondary screen', async () => {
+  const display = {
+    bounds: { x: 1920, y: 0, width: 1920, height: 1080 },
+    workArea: { x: 1920, y: 23, width: 1920, height: 1057 },
+  } as any
+
+  const bounds = window.getFullscreenBounds(display)
+  expect(bounds).toEqual({
+    x: 1920,
+    y: 22,
+    width: 1920,
+    height: 1080 - 22,
+  })
+})
+
+test('Centered coordinates respect workArea', async () => {
+  (window.getCurrentScreen as unknown as Mock).mockReturnValue({
+    bounds: { x: 0, y: 0, width: 1920, height: 1080 },
+    workArea: { x: 80, y: 23, width: 1840, height: 1057 },
+    workAreaSize: { width: 1840, height: 1057 },
+  })
+
+  const coords = window.getCenteredCoordinates(800, 600)
+  expect(coords).toEqual({
+    x: 80 + Math.round((1840 - 800) / 2),
+    y: 23 + Math.round(Math.max(1057 / 5, (1057 - 600) / 3)),
+  })
+})

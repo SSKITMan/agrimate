@@ -74,8 +74,8 @@ export const getCenteredCoordinates = (w: number, h: number) => {
   const cursorScreen = getCurrentScreen();
   const { width, height } = cursorScreen.workAreaSize;
   return {
-    x: cursorScreen.bounds.x + Math.round((width - w) / 2),
-    y: cursorScreen.bounds.y + Math.round(Math.max(height/5, (height - h) / 3)),
+    x: cursorScreen.workArea.x + Math.round((width - w) / 2),
+    y: cursorScreen.workArea.y + Math.round(Math.max(height/5, (height - h) / 3)),
   };
 };
 
@@ -89,7 +89,7 @@ export const getFullscreenBounds = (screen: Display): { x: number, y: number, wi
   const y = screen.workArea.y - 1;
   return {
     x, y,
-    width: screen.bounds.width - x,
+    width: screen.workArea.width,
     height: screen.bounds.height - y,
   }
 }
